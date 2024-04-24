@@ -1,24 +1,56 @@
-import { useForm } from "react-hook-form";
+import {  useForm } from "react-hook-form";
 import Errors from "./Errors";
 import type { draftPatient } from "../types";
 import { usePatientStore } from "../Store";
+import { useEffect } from "react";
+import { toast } from 'react-toastify';
+
 
 
 
 
 
 export default function PatientForm() {
-    const { register, handleSubmit,formState:{errors}, reset } = useForm<draftPatient>();
-    const  {addPatient} = usePatientStore();
+    const { register, setValue, handleSubmit,formState:{errors}, reset } = useForm<draftPatient>();
+  
+    const patients = usePatientStore(state => state.patients);
+    const activeId = usePatientStore(state => state.activeId);
+    const addPatient = usePatientStore(state => state.addPatient);
 
+
+    const update = usePatientStore(state => state.updatePatient);
+
+
+
+  useEffect(() => {
+    if(activeId){
+      const active = patients.filter((patient) => patient.id === activeId)[0]
+      setValue("name", active.name);
+      setValue("caretaker", active.caretaker);
+      setValue("email", active.email);
+      setValue("date", active.date);
+      setValue("symptoms", active.symptoms);
+
+      
+      
+
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeId])
 
 
     const registerPatient = (data: draftPatient) => {
+
+      if (!activeId) {
         addPatient(data);
+        toast.success("Paciente añadido correctamente")
+      }
+      else {
+        update(data);
+        toast.success("Paciente actualizado correctamente")
+      }
 
         reset();
-
-
 
     }   
 
