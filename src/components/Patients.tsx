@@ -1,5 +1,6 @@
 
 import type { patient } from "../types"
+import { usePatientStore } from "../Store"
 
 
 type PatientsProps = {
@@ -7,6 +8,8 @@ type PatientsProps = {
 }
 
 export default function Patients({patient}  : PatientsProps) {
+       const deletePatients = usePatientStore((state) => state.deletePatient);
+       const getPatientById = usePatientStore((state) => state.getPatientByid);
 
   return (
     <div className="grid grid-cols-1 gap-6">
@@ -28,6 +31,22 @@ export default function Patients({patient}  : PatientsProps) {
                     {patient.symptoms}
             </p>
 
+            
+         <div className="flex justify-between gap-3 mt-3">
+                <button 
+              
+
+                onClick={() => {getPatientById(patient.id)}}
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        Editar
+
+                </button>
+                <button 
+                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                onClick={() => deletePatients(patient.id)}>
+                        Eliminar
+                </button>
+         </div>
 
         </div>
     </div>
